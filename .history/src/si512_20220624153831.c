@@ -1,9 +1,8 @@
 /*
- * @Author: dmgy 3208449614@qq.com
- * @Date: 2022-06-24 15:38:32
- * @LastEditors: dmgy 3208449614@qq.com
- * @LastEditTime: 2022-06-24 15:40:06
- * @FilePath: \SI522A_driver\src\si512.c
+ * si512.c
+ *
+ *  Created on: 2022年6月14日
+ *      Author: LIUBING
  */
 #include "si512.h"
 
@@ -60,6 +59,7 @@ int8_t si512_p2p_send_data(si522_dev *dev, uint8_t * const w_data, uint8_t len) 
   for(i = 0; i < unLen; i++)
   {
     si522a_reg_write (dev, FIFODataReg, w_data[i]);     //数据写到FIFO里
+    NRF_LOG_INFO("i = %d     write_data = %x",i, w_data[i]);
   }
   si522a_reg_write (dev, CommandReg, 0x04);     //使能Transmit
   si522a_reg_set_bitmask(dev, 0x0d, 0x80);     //开始发送

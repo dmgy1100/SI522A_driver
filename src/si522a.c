@@ -1555,3 +1555,27 @@ void si5xx_powerdown (si522_dev* dev)
   dev->reset_high(); //重新上电
   dev->delay_ms(100);
 }
+void get_si5xx_status(si522_dev* dev, si5xx_dev_status *dev_status)
+{
+  dev_status->spi_connect_status = check_spi_connect(dev);
+  dev_status->dev_antenna_status = check_dev_antenna_status(dev);
+}
+bool check_spi_connect(si522_dev* dev)
+{
+  uint8_t tmp = si522a_reg_read (dev, 0x37);
+  if (tmp == SI5XX_DEV_VERSION)
+    return true;
+  else
+    return false;
+}
+bool check_dev_antenna_status(si522_dev* dev)
+{
+  uint8_t i;
+  si522a_reg_write(dev, TxControlReg,si522a_reg_read(dev, TxControlReg) | 0x03);  //Tx1RFEn=1  Tx2RFEn=1
+  i = si522a_reg_read(dev, TxControlReg);
+  si522a_reg_write(dev, TxControlReg,80);
+  if (i == 0x83)
+    return true;
+  else
+    return false;
+}

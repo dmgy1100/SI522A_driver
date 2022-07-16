@@ -7,6 +7,14 @@
 
 #include "main.h"
 
+#define SI5XX_DEV_VERSION     0x82
+
+typedef struct
+{
+  bool spi_connect_status;                //spi连接状态
+  bool dev_antenna_status;                //设备天线驱动状态
+} si5xx_dev_status;
+
 typedef struct
 {
   void (*readData) (uint8_t* pData, uint16_t Size);
@@ -17,7 +25,12 @@ typedef struct
   void (*reset_low)(void);
   void (*reset_high)(void);
   void (*delay_ms) (uint32_t ms);
+  si5xx_dev_status dev_status;
 } si522_dev;
+
+void get_si5xx_status(si522_dev* dev, si5xx_dev_status *dev_status);
+bool check_spi_connect(si522_dev* dev);
+bool check_dev_antenna_status(si522_dev* dev);
 
 void si522a_reg_write(si522_dev* dev, uint8_t addr, uint8_t value);
 uint8_t si522a_reg_read(si522_dev* dev, uint8_t addr);
